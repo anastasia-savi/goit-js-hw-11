@@ -1,5 +1,7 @@
 const { default: axios } = require('axios');
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 
 const refs = {
   form: document.querySelector('.search-form'),
@@ -47,6 +49,7 @@ async function getEvents(query, page) {
   if (data.data.hits.length !== 0) {
     refs.button.classList.remove('invisible');
   }
+
   renderCards(data.data.hits);
   totelH = data.data.totalHits;
   if (res < 0) {
@@ -58,13 +61,19 @@ async function getEvents(query, page) {
   if (page === 1) {
     Notify.success(`Hooray! We found ${totelH} images.`);
   }
+  let galleryModal = new SimpleLightbox('.gallery a', {
+    captionsData: 'alt',
+    captionDelay: '250ms',
+    captionPosition: 'bottom',
+  });
 }
 
 function renderCards(data) {
   const markup = data
     .map(hit => {
       return `<div class="photo-card card ">
-    <img src= ${hit.previewURL} alt="${hit.tags} class="card-img-top" loading="lazy" />
+      <a href="${hit.largeImageURL}">
+    <img src= ${hit.previewURL} alt="${hit.tags}"  class="card-img-top" loading="lazy" data-source="${hit.largeImageURL}"/></a>
     <div class="info card-body">
       <p class="info-item card-text">
       Likes 
@@ -103,5 +112,6 @@ refs.button.addEventListener('click', loadMore);
 function loadMore() {
   pageToFetch += 1;
   res = totelH - pageToFetch * 40;
+  galleryModal.refresh();
   getEvents(queryToFetch, pageToFetch);
 }
