@@ -118,7 +118,7 @@ function loadMore() {
   pageToFetch += 1;
   res = totelH - pageToFetch * 40;
   getEvents(queryToFetch, pageToFetch);
-  scroll();
+  scroll(); /* не працює, як виправити?*/
 }
 
 function scroll() {
