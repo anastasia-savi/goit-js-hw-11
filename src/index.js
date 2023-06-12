@@ -46,11 +46,13 @@ async function getEvents(query, page) {
     );
     return;
   }
+
   if (data.data.hits.length !== 0) {
     refs.button.classList.remove('invisible');
   }
 
   renderCards(data.data.hits);
+
   totelH = data.data.totalHits;
   if (res < 0) {
     Notify.failure(
@@ -58,14 +60,17 @@ async function getEvents(query, page) {
     );
     refs.button.classList.add('invisible');
   }
+
   if (page === 1) {
     Notify.success(`Hooray! We found ${totelH} images.`);
   }
+
   let galleryModal = new SimpleLightbox('.gallery a', {
     captionsData: 'alt',
     captionDelay: '250ms',
     captionPosition: 'bottom',
   });
+  galleryModal.refresh();
 }
 
 function renderCards(data) {
@@ -112,6 +117,17 @@ refs.button.addEventListener('click', loadMore);
 function loadMore() {
   pageToFetch += 1;
   res = totelH - pageToFetch * 40;
-  galleryModal.refresh();
   getEvents(queryToFetch, pageToFetch);
+  scroll();
+}
+
+function scroll() {
+  const { height: cardHeight } = document
+    .querySelector('.gallery')
+    .firstElementChild.getBoundingClientRect();
+
+  window.scrollBy({
+    top: cardHeight * 2,
+    behavior: 'smooth',
+  });
 }
