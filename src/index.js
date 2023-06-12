@@ -14,7 +14,8 @@ const API = '37163644-8110db8e34b19fc01c5b102a4';
 
 let pageToFetch = 1;
 let queryToFetch = '';
-
+let totelH;
+let res;
 async function fetchEvents(keyword, page) {
   try {
     const response = await axios(BASE_URL, {
@@ -43,10 +44,20 @@ async function getEvents(query, page) {
     );
     return;
   }
+  if (data.data.hits.length !== 0) {
+    refs.button.classList.remove('invisible');
+  }
   renderCards(data.data.hits);
-  //   if (!data.data.hits) {
-  //     refs.button.classList.remove('.invisible');
-  //   }
+  totelH = data.data.totalHits;
+  if (res < 0) {
+    Notify.failure(
+      "We're sorry, but you've reached the end of search results."
+    );
+    refs.button.classList.add('invisible');
+  }
+  if (page === 1) {
+    Notify.success(`Hooray! We found ${totelH} images.`);
+  }
 }
 
 function renderCards(data) {
@@ -85,12 +96,12 @@ function onSubmit(e) {
   pageToFetch = 1;
   refs.cart.innerHTML = '';
   getEvents(queryToFetch, pageToFetch);
-  refs.button.classList.remove('invisible');
 }
 
 refs.button.addEventListener('click', loadMore);
 
 function loadMore() {
   pageToFetch += 1;
+  res = totelH - pageToFetch * 40;
   getEvents(queryToFetch, pageToFetch);
 }
