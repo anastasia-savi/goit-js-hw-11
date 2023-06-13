@@ -18,6 +18,7 @@ let pageToFetch = 1;
 let queryToFetch = '';
 let totelH;
 let res;
+let galleryModal;
 async function fetchEvents(keyword, page) {
   try {
     const response = await axios(BASE_URL, {
@@ -65,7 +66,7 @@ async function getEvents(query, page) {
     Notify.success(`Hooray! We found ${totelH} images.`);
   }
 
-  let galleryModal = new SimpleLightbox('.gallery a', {
+  galleryModal = new SimpleLightbox('.gallery a', {
     captionsData: 'alt',
     captionDelay: '250ms',
     captionPosition: 'bottom',
@@ -109,6 +110,10 @@ function onSubmit(e) {
 
   pageToFetch = 1;
   refs.cart.innerHTML = '';
+  if (!queryToFetch.trim() || queryToFetch === 0) {
+    Notify.failure('Please, enter someting.');
+    return;
+  }
   getEvents(queryToFetch, pageToFetch);
 }
 
