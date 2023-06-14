@@ -20,8 +20,6 @@ img {
   justify-content: space-between;
   padding-top: 10px;
   gap: 20px;
-  max-height: calc(100vh - 150px);
-  overflow: scroll;
 }
 
 .info {

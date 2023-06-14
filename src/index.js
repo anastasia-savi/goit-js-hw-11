@@ -19,6 +19,7 @@ let queryToFetch = '';
 let totelH;
 let res;
 let galleryModal;
+let lastPage;
 async function fetchEvents(keyword, page) {
   try {
     const response = await axios(BASE_URL, {
@@ -45,6 +46,7 @@ async function getEvents(query, page) {
     Notify.failure(
       'Sorry, there are no images matching your search query. Please try again.'
     );
+    refs.button.classList.add('invisible');
     return;
   }
 
@@ -59,6 +61,10 @@ async function getEvents(query, page) {
     Notify.failure(
       "We're sorry, but you've reached the end of search results."
     );
+  }
+
+  lastPage = totelH / 40;
+  if (lastPage < pageToFetch) {
     refs.button.classList.add('invisible');
   }
 
@@ -107,11 +113,12 @@ function renderCards(data) {
 function onSubmit(e) {
   e.preventDefault();
   queryToFetch = refs.searchInput.value;
-
+  res = 0;
   pageToFetch = 1;
   refs.cart.innerHTML = '';
-  if (!queryToFetch.trim() || queryToFetch === 0) {
+  if (!queryToFetch.trim() || queryToFetch === 0 || res < 0) {
     Notify.failure('Please, enter someting.');
+    refs.button.classList.add('invisible');
     return;
   }
   getEvents(queryToFetch, pageToFetch);
@@ -123,7 +130,7 @@ function loadMore() {
   pageToFetch += 1;
   res = totelH - pageToFetch * 40;
   getEvents(queryToFetch, pageToFetch);
-  scroll(); /* не працює, як виправити?*/
+  scroll();
 }
 
 function scroll() {
